@@ -7,7 +7,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import ReportDialog from './ReportDialog'
 import api from '../wit/axiosInstance'
-import { parseResponse } from '../wit'
+import { getResponsesFromIntents } from '../wit'
 
 import { useState } from 'react'
 import Message from '../types/Message'
@@ -37,21 +37,15 @@ const Chat = () => {
   const classes = useStyles();
 
   const handleOnSend = async (message: Message) => {
-    const newMessagesFromUser = messages.concat(message)
-    setMessages(newMessagesFromUser)
+    const newMessages = messages.concat(message)
+    setMessages(newMessages)
 
     const res = await api.get('/message', {
       params: { q: message.text },
     })
-    const witRes = parseResponse(res.data)
-
-    console.log(witRes)
-    //TODO: sacar lo de image
-
-    // const newMessagesFromBot = res.data.map((res) => (
-    //   { id: 'bot', text: res.text, image: res.image }
-    // ))
-    //setMessages(newMessagesFromUser.concat(newMessagesFromBot))
+    
+    const responses = getResponsesFromIntents(res?.data?.intents)
+    setMessages(newMessages.concat(responses))
   }
 
   const handleReport = () => {
