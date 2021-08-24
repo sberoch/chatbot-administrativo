@@ -8,10 +8,10 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import ReportDialog from './ReportDialog'
 import api from '../wit/axiosInstance'
 import { getResponsesFromIntents } from '../wit'
-
 import { useState } from 'react'
 import Message from '../types/Message'
 import { makeStyles } from '@material-ui/styles'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 const useStyles = makeStyles({
   input: {
@@ -33,6 +33,7 @@ const useStyles = makeStyles({
 
 const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([])
+  const [loading, setLoading] = useState(false)
   const [reportOpen, setReportOpen] = useState(false)
   const classes = useStyles();
 
@@ -40,12 +41,15 @@ const Chat = () => {
     const newMessages = messages.concat(message)
     setMessages(newMessages)
 
+    setLoading(true)
     const res = await api.get('/message', {
       params: { q: message.text },
     })
+    console.log(res)
     
-    const responses = getResponsesFromIntents(res?.data?.intents)
+    const responses = await getResponsesFromIntents(res?.data?.intents)
     setMessages(newMessages.concat(responses))
+    setLoading(false)
   }
 
   const handleReport = () => {
@@ -57,6 +61,7 @@ const Chat = () => {
 
   return (
     <div>
+      { loading && <LinearProgress />}
       <ReportDialog open={reportOpen} messages={messages} onClose={() => setReportOpen(false)} />
       <IconButton 
         aria-label="report"
@@ -68,8 +73,8 @@ const Chat = () => {
       <Grid container spacing={0} justify='center'>
         <Grid item xs={12} sm={8} alignContent='center' className={classes.chatArea}>
           <List>
-            {messages.map((message) => (
-              <ListItem key={message.text}>
+            {messages.map((message, i) => (
+              <ListItem key={i}>
                 <ChatBubble message={message} />
               </ListItem>
             ))}

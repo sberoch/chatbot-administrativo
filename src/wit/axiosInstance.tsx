@@ -10,7 +10,8 @@ const api = axios.create({
 api.interceptors.request.use(
   config => {
     //TODO: get from env
-    const token = 'ICX6YP2D6NJV3VKIFF56ZGTQ4PW53TRN'
+    //const token = 'ICX6YP2D6NJV3VKIFF56ZGTQ4PW53TRN'
+    const token = 'JBZHWQLH4XJW7RBHGWGAGONNCGNCY5F6'
     config.headers['Authorization'] = 'Bearer ' + token;
     config.params['v'] = '20200513';
     return config;
