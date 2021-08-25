@@ -44,9 +44,7 @@ const Chat = () => {
     setLoading(true)
     const res = await api.get('/message', {
       params: { q: message.text },
-    })
-    console.log(res)
-    
+    })    
     const responses = await getResponsesFromIntents(res?.data?.intents)
     setMessages(newMessages.concat(responses))
     setLoading(false)

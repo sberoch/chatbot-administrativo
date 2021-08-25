@@ -1,16 +1,6 @@
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { config } from '../config';
 
-interface StringMap { 
-  [key: string]: string[];
-}
-
-export const responses : StringMap = {
-  //TODO: add all intents here
-  saludo: [ "Hola" ],
-  default: [ "Lo lamento, no comprendí tu mensaje. Por favor intentalo de nuevo." ]
-}
-
 const setup = async () => {
   const doc = new GoogleSpreadsheet(config.SPREADSHEET_ID);
   await doc.useServiceAccountAuth({
