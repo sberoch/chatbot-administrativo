@@ -6,8 +6,7 @@ import ChatBubble from './ChatBubble'
 import IconButton from '@material-ui/core/IconButton'
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import ReportDialog from './ReportDialog'
-import api from '../wit/axiosInstance'
-import { getResponsesFromIntents } from '../wit'
+import { getResponsesFromIntents, getWitResponse } from '../wit'
 import { useState } from 'react'
 import Message from '../types/Message'
 import { makeStyles } from '@material-ui/styles'
@@ -42,10 +41,8 @@ const Chat = () => {
     setMessages(newMessages)
 
     setLoading(true)
-    const res = await api.get('/message', {
-      params: { q: message.text },
-    })    
-    const responses = await getResponsesFromIntents(res?.data?.intents)
+    const intents = await getWitResponse(message.text)   
+    const responses = await getResponsesFromIntents(intents)
     setMessages(newMessages.concat(responses))
     setLoading(false)
   }
